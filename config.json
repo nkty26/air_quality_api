@@ -1,0 +1,31 @@
+{
+    
+    "DB_KEYS" : {
+        "HOST" : "218.50.4.180", 
+        "USERNAME" : "centralcity_collector", 
+        "PASSWORD" : "asicentralcity", 
+        "DBNAME" : "main_centralcity", 
+        "PORT" : 3306
+    },
+    "OLD_API_KEYS" : {
+        "decodeKey" : "KReV8gagy0IbZTCXCDJdbP3RUDjVrTiYBN29T5p4lqER4iqP+UcQ7O4Cwtal37G7uHk2xNg+Lriu3GxTHvun4g==", 
+        "encodeKey" : "KReV8gagy0IbZTCXCDJdbP3RUDjVrTiYBN29T5p4lqER4iqP%2BUcQ7O4Cwtal37G7uHk2xNg%2BLriu3GxTHvun4g%3D%3D"
+    },
+    "API_KEYS":{
+        "decodeKey" : "YIeNDPVS4hAgu%2Bw4tYpwtxVvdpC3FZlVZ0IUNS2kBh50VY%2BqcgQMAW4oz4d6KxQ%2FGuZIpfs1pMd%2FSJSw%2BcApLA%3D%3D", 
+        "encodeKey" : "YIeNDPVS4hAgu+w4tYpwtxVvdpC3FZlVZ0IUNS2kBh50VY+qcgQMAW4oz4d6KxQ/GuZIpfs1pMd/SJSw+cApLA=="
+    },
+
+    "CRON_CMDS": {
+
+        "PERIOD": "* * * * *",
+        "VENV_PATH": "/home/asicentralcity3/myenv/bin/python",
+        "SCRIPT_PATH": "/home/asicentralcity3/Workspace/taeyong/airquality_api.py",
+        "ARG1": "서울", 
+        "ARG2": "성수동",
+        "ARG3": "HOUR",
+        "ARG4": "1200"
+
+    }
+}
+
