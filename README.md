@@ -28,10 +28,19 @@ JSON 형식으로 데이터를 반환하며, 이후 api_to_db.py에서 데이터
 
 **5. cron 작업 설정**
 주기적인 업데이트를 위해 다음 crontab 항목을 추가합니다:
-bash
-코드 복사
+
 * * * * *  cd /home/asicentralcity3/Workspace/air_quality_data; /home/asicentralcity3/myenv/bin/python main.py 서울 반포동 HOUR unique=True >> /home/asicentralcity3/Workspace/air_quality_data/cronlogs.log 2>&1; cd
-원하는 도시 및 구역을 선택하고, 타임프레임 (HOUR 또는 DAILY), 필요에 따라 unique=True를 조정합니다.
+
+- 원하는 도시 및 구역을 선택하고, 타임프레임 (HOUR 또는 DAILY), 필요에 따라 unique=True를 조정합니다.
+
+* * * * *  cd /home/asicentralcity3/Workspace/taeyong; /home/asicentralcity3/myenv/bin/python main.py 서울 반포동 HOUR unique=True>> /home/asicentralcity3/Workspace/taeyong/cronlogs.log 2>&1; cd
+Ex) * * * * *  cd /home/asicentralcity3/Workspace/taeyong; /home/asicentralcity3/myenv/bin/python main.py 서울 반포동 HOUR unique=True>> /home/asicentralcity3/Workspace/taeyong/cronlogs.log 2>&1; cd
+arg1 = 도시
+arg2= 동명
+arg3 = Timeframe (HOUR, DAILY)
+arg4 = uniqueFlag=True, uniqueFlag=False
+uniqueFlag=False --> crontab 주기별로 기상청 API 조회하여 현재 Record Timestamp가 마지막 Record Timestamp과 동일해도 INSERT 진행 (Timestamp만 현재 시간으로 갱신)
+uniqueFlag=True --> crontab 주기별로 기상청 API 조회하여 현재 Timestamp가 다를 경우에만 INSERT 진행
 
 **6. 데이터베이스 정보**
 데이터베이스: main_centralcity
