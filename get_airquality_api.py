@@ -15,6 +15,7 @@ class AirQualityChecker:
             "venv_path": "",
             "script_path": "",
             "cronlog_path": "",
+            "uniqueFlag": "",
             "nearby_count": "",
             "TM_X": "",
             "TM_Y": "",
@@ -29,6 +30,7 @@ class AirQualityChecker:
         match = re.search(r'\d+', input_str)
         # Return the matched number or 1 if no match found
         return int(match.group()) if match else 1
+    
     def parse_cron_entries(self, CMD):
         print("======================================================== 0. READ AND PARSE CRONTAB COMMANDS ========================================================\n")
         print("PRE_PARSED CRONTAB COMMANDS", CMD)
@@ -45,8 +47,11 @@ class AirQualityChecker:
         self.CRON_JSON['script_path'] = cron_arr[3][0:-1] + "/" + cron_arr[5]
         self.CRON_JSON['city'] = cron_arr[6]
         self.CRON_JSON['dong'] = cron_arr[7]
-        self.CRON_JSON['timeFrame'] = cron_arr[8][0:-2]
-        self.CRON_JSON['cronlog_path'] = cron_arr[9]
+        self.CRON_JSON['timeFrame'] = cron_arr[8]
+        self.CRON_JSON['uniqueFlag'] = "True" in cron_arr[9]
+        self.CRON_JSON['cronlog_path'] = cron_arr[10]
+        # pretty = json.dumps(self.CRON_JSON, indent=4, ensure_ascii=False)
+        # print(pretty)
     def find_tm(self):
         URL = 'http://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getTMStdrCrdnt'
         params = {
