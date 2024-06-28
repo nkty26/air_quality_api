@@ -8,13 +8,11 @@ class DataBaseManager:
     def __init__(self, config):
         self.db_config = config["DB_KEYS"]
 
-    def INSERT_DATA(self, data):
+    def insert_data(self, data):
         print("\n\n======================================================== RECORD TO INSERT ========================================================")
-
         pretty_final = json.dumps(data, indent=4, ensure_ascii=False)
         print(pretty_final)
-        print("================================================================================================================")
-
+        print("=====================================================================================================================================")
         sql_query = """
         INSERT INTO air_quality_history_final
         (Timestamp, District_Name, Station_Address, Station_Code, Station_TM, PM25_Value, Khai_Value, SO2_Value, CO_Value, PM10_Value, NO2_Value, O3_Value)
@@ -33,7 +31,6 @@ class DataBaseManager:
         NO2_Value = VALUES(NO2_Value), 
         O3_Value = VALUES(O3_Value)
         """
-
         values = (
             data[0]["Timestamp"],
             data[0]["District_Name"],
@@ -51,6 +48,7 @@ class DataBaseManager:
         # print(f"Constructed SQL Query: {sql_query}")
         # print(f"Values to be inserted: {values}")
         return sql_query, values
+    
     def fetch_last_db_write(self, cursor):
         try:
             query = """
@@ -66,8 +64,11 @@ class DataBaseManager:
                 print("No records found in air_quality_history table.")  
         except mysql.connector.Error as error:
             print(f"Error fetching most recent timestamp: {error}")
-    def API_TO_DB(self, json_data,flag):
-        print("======================================================== DB CONNECTION ========================================================\n")
+
+    def api_to_db(self, json_data,flag):
+        print("\n============================================================================================================================================")
+        print("4. DB CONNECTION ")
+        
         print(f"DB Name: {self.db_config['DBNAME']}, Database user: {self.db_config['USERNAME']}, Host: {self.db_config['HOST']}, Port: {self.db_config['PORT']}\n\n")
         
         CREATE_TABLE = """
@@ -86,7 +87,6 @@ class DataBaseManager:
             O3_Value FLOAT
         )
         """
-
         try:
             connection = mysql.connector.connect(
                 host=self.db_config["HOST"],
@@ -97,30 +97,32 @@ class DataBaseManager:
             )
 
             if connection.is_connected():
-                print('==> Connected to MySQL database\n\n')
+                print('==> Connected to MySQL database')
+                print("============================================================================================================================================\n")
             cursor = connection.cursor()
             cursor.execute("SHOW TABLES LIKE 'air_quality_history_final'")
             result = cursor.fetchone()
-            print("======================================================== CREATING TABLE ========================================================")
+            print("============================================================================================================================================")
+            print("5. CREATING TABLE (Create New Table if it Does Not Exist...)")
+            
             if result:
                 print("==> Table 'air_quality_history_final' already exists. Skipping creation.")
             else:
                 cursor.execute(CREATE_TABLE)
                 connection.commit()
-                print("=========> Table 'air_quality_history_final' created successfully.")
-          
-            
+                print("=========> Table 'air_quality_history_final' created successfully.") 
             last_write_TS = self.fetch_last_db_write(cursor)
             curr_record_TS = json_data[0]['Timestamp']
-            print("========================================================= INSERTING DATA =======================================================================\n")
-            if flag: # Insert the record with the next unique timestamp
+            print("\n============================================================================================================================================")
+            print("6. INSERTING DATA ")
+            
+            
+            if flag: # Insert the updated record with the next unique timestamp
                 # print("\n\n========================================================== CHECKING TIMESTAMPS ======================================================================\n")
                 if last_write_TS != curr_record_TS:
-                    insert_query, values = self.INSERT_DATA(json_data)
+                    insert_query, values = self.insert_data(json_data)
                     cursor.execute(insert_query, values)
-                    
-                    print(" ====>   last_write_TS :  ", last_write_TS, " |  curr_record_TS :", curr_record_TS)
-                    
+                    print(" ====>   last_write_TS :  ", last_write_TS, " |  curr_record_TS :", curr_record_TS)          
                     print(f" ====>   DB INSERT (unique = True) New Record Fetched")
                     print(f" ====>  {len(json_data)} records inserted successfully into air_quality_history table at timestamp {curr_record_TS}\n\n")
                     connection.commit()
@@ -130,22 +132,22 @@ class DataBaseManager:
                     print(f" ====>  DB INSERT (unique = True)")
                     print(f" ====>  There is no new data with new Timestamp to insert.")
                     return 
-            
-            else: 
-                insert_query, values = self.INSERT_DATA(json_data)
+            else: # Insert the same record, only updating the timestamp
+                insert_query, values = self.insert_data(json_data)
                 cursor.execute(insert_query, values)
-                
                 print(f" ==== DB INSERT (unique = False) Timestamp만 갱신") 
                 print(f" ===> {len(json_data)} records inserted successfully into air_quality_history table with timestamp {json_data[0]['Timestamp']}\n\n")
                 connection.commit()
+            print("=========================================================================================================================================\n")
         except mysql.connector.Error as error:
             print(f"Error connecting to MySQL database: {error}")
-
         except Exception as error:
             print(f"Error inserting data: {error}")
-
         finally:
             if 'connection' in locals() and connection.is_connected():
+                print("\n============================================================================================================================================")
+                print("7. CLOSING SQL DB CONNECTION ")
                 cursor.close()
                 connection.close()
                 print("MySQL connection is closed")
+                print("=========================================================================================================================================\n")

@@ -99,14 +99,13 @@ class AirQualityChecker:
         stations = sorted(arr, key=lambda d: d['tm'])
         print("=====================================================   API 결과 처리 및 PARSING 후 JSON에 저장완료   ==============================================================================\n")
         print(self.CRON_JSON)
-        print(f"------> 근접측정소정보 Status Code: {res.status_code}\n")
+        print(f"\n------>근접측정소정보 Status Code: {res.status_code}\n")
 
-        print("===============================================================================================================================================\n\n")
+        print("============================================================================================================================================")
         print("2. 근접 측정소 조회")
-        print("============================================================================================================================================\n\n")
+        print("============================================================================================================================================\n")
         pretty_json = json.dumps(response, indent=4, ensure_ascii=False)
         print(pretty_json)
-
         return stations
 
     def 대기오염통계(self, stations):
@@ -125,15 +124,14 @@ class AirQualityChecker:
             params['sidoName'] = input_sido
             try:
                 response = requests.get(URL, params=params)
-                print("\n\n\n================================================================================================================")
-                print(f"\n 3. 대기오염통계 for {station['addr']} API Status Code: {response.status_code}\n")
+                print("\n================================================================================================================")
+                print(f"3. 대기오염통계 for {station['addr']} API Status Code: {response.status_code}")
                 print("================================================================================================================\n\n")
                 response.raise_for_status()
 
                 try:
                     response_json = response.json()
                     print(self.CRON_JSON)
-                    # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", response_json)
                     for item in response_json['response']['body']['items']:
                         if item['cityName'] == input_district:
                             if item['pm25Value'] and item['khaiValue'] and item['so2Value'] and item['pm10Value']:
@@ -153,14 +151,11 @@ class AirQualityChecker:
                                 }
                                 final_data.append(row)
                                 break
-
                     if final_data:
                         break
-
                 except json.JSONDecodeError:
                     print("Error decoding JSON. Response content:")
                     print(response.text)
-
             except requests.exceptions.RequestException as e:
                 print(f"HTTP request failed: {e}")
 
@@ -168,7 +163,6 @@ class AirQualityChecker:
         print("================================================================================================================")
         print("기록된 JSON 데이터:")
         print(pretty_final)
-
         return final_data
 
     def main(self):
