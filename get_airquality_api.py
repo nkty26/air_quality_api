@@ -52,7 +52,8 @@ class AirQualityChecker:
         self.CRON_JSON['cronlog_path'] = cron_arr[10]
         # pretty = json.dumps(self.CRON_JSON, indent=4, ensure_ascii=False)
         # print(pretty)
-    def find_tm(self):
+
+    def get_tm_coordinates(self):
         URL = 'http://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getTMStdrCrdnt'
         params = {
             'serviceKey': self.api_keys['encodeKey'],
@@ -77,7 +78,7 @@ class AirQualityChecker:
 
         return pretty_json
 
-    def 근접측정소정보(self):
+    def get_nearby_observatories(self):
         URL = 'http://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList'
         params = {
             'serviceKey': self.api_keys['encodeKey'],
@@ -99,7 +100,7 @@ class AirQualityChecker:
         stations = sorted(arr, key=lambda d: d['tm'])
         print("=====================================================   API 결과 처리 및 PARSING 후 JSON에 저장완료   ==============================================================================\n")
         print(self.CRON_JSON)
-        print(f"\n------>근접측정소정보 Status Code: {res.status_code}\n")
+        print(f"\n------>get_nearby_observatories Status Code: {res.status_code}\n")
 
         print("============================================================================================================================================")
         print("2. 근접 측정소 조회")
@@ -108,7 +109,7 @@ class AirQualityChecker:
         print(pretty_json)
         return stations
 
-    def 대기오염통계(self, stations):
+    def get_air_pollution_data(self, stations):
         final_data = []
         URL = 'http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst'
         params = {
@@ -125,7 +126,7 @@ class AirQualityChecker:
             try:
                 response = requests.get(URL, params=params)
                 print("\n================================================================================================================")
-                print(f"3. 대기오염통계 for {station['addr']} API Status Code: {response.status_code}")
+                print(f"3. get_air_pollution_data for {station['addr']} API Status Code: {response.status_code}")
                 print("================================================================================================================\n\n")
                 response.raise_for_status()
 
@@ -166,7 +167,7 @@ class AirQualityChecker:
         return final_data
 
     def main(self):
-        self.find_tm()
-        stations = self.근접측정소정보()
-        air_quality_data = self.대기오염통계(stations)
+        self.get_tm_coordinates()
+        stations = self.get_nearby_observatories()
+        air_quality_data = self.get_air_pollution_data(stations)
         return air_quality_data

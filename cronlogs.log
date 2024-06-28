@@ -5497,6 +5497,7 @@ DB Name: main_centralcity, Database user: centralcity_collector, Host: 218.50.4.
  ====>  DB INSERT (unique = True)
  ====>  There is no new data with new Timestamp to insert.
 MySQL connection is closed
+<<<<<<< HEAD
 ENTRY ENTRY ENTRY * * * * *  cd /home/asicentralcity3/Workspace/taeyong; /home/asicentralcity3/myenv/bin/python main.py 서울 반포동 HOUR unique=True>> /home/asicentralcity3/Workspace/taeyong/cronlogs.log 2>&1; cd 
 ======================================================== 0. READ AND PARSE CRONTAB COMMANDS ========================================================
 
@@ -27069,3 +27070,9 @@ DB Name: main_centralcity, Database user: centralcity_collector, Host: 218.50.4.
 MySQL connection is closed
 =========================================================================================================================================
 
+=======
+>>>>>>> 28766a07be0c22b685a818c990aae41f236cfaf9
+  File "/home/asicentralcity3/Workspace/taeyong/main.py", line 5
+    >>>>>>> 28766a07be0c22b685a818c990aae41f236cfaf9
+                ^
+SyntaxError: invalid decimal literal
